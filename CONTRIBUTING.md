@@ -21,28 +21,28 @@ Open a [compatibility report](../../issues/new?template=compatibility_report.md)
 ## Development setup
 
 ```sh
-git clone https://github.com/roosht3/chr-tpms.git
-cd chr-tpms
+git clone https://github.com/roosht3/tpms-relearn.git
+cd tpms-relearn
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 python -m unittest discover -s tests -v
 ```
 
-The tests use simulated adapter and ECU replies, so no car or adapter is needed. `chr-tpms plan` also works offline:
+The tests use simulated adapter and ECU replies, so no car or adapter is needed. `tpms-relearn plan` also works offline:
 
 ```sh
-chr-tpms plan --protocol can 1111111 2222222 3333333 4444444
+tpms-relearn plan --protocol can 1111111 2222222 3333333 4444444
 ```
 
 ## Code layout
 
 | File | What it does |
 |---|---|
-| `chr_tpms/cli.py` | Command-line interface |
-| `chr_tpms/transport.py` | BLE connection, ELM327 commands, ISO-TP framing and flow control |
-| `chr_tpms/protocol.py` | Byte-level encoding and decoding, no I/O |
-| `chr_tpms/service.py` | Read, backup, and register logic |
+| `tpms_relearn/cli.py` | Command-line interface |
+| `tpms_relearn/transport.py` | BLE connection, ELM327 commands, ISO-TP framing and flow control |
+| `tpms_relearn/protocol.py` | Byte-level encoding and decoding, no I/O |
+| `tpms_relearn/service.py` | Read, backup, and register logic |
 | `docs/protocol.md` | What is sent to the car and what it answers |
 
 ## Rules for changes that touch the car

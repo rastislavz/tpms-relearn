@@ -12,7 +12,7 @@ from .transport import Elm, Transcript, ToyotaLink, select_characteristics
 
 
 def parser():
-    p = argparse.ArgumentParser(prog="chr-tpms", description="Read and register Toyota TPMS sensor IDs through a BLE ELM327 adapter")
+    p = argparse.ArgumentParser(prog="tpms-relearn", description="Read and register Toyota TPMS sensor IDs through a BLE ELM327 adapter")
     p.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = p.add_subparsers(dest="action", required=True)
     sub.add_parser("scan", help="List nearby BLE adapters (no vehicle commands)")

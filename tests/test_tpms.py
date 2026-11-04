@@ -4,10 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from chr_tpms.protocol import (NegativeResponse, ProtocolError, frames, parse_frames,
+from tpms_relearn.protocol import (NegativeResponse, ProtocolError, frames, parse_frames,
                                positive, reassemble, sensor_id, validate_ids, write_payload)
-from chr_tpms.service import read_ids, register, save_backup
-from chr_tpms.transport import Elm, ToyotaLink
+from tpms_relearn.service import read_ids, register, save_backup
+from tpms_relearn.transport import Elm, ToyotaLink
 
 OLD = ["01234567", "02345678", "03456789", "0456789A"]
 NEW = ["01111111", "02222222", "03333333", "04444444"]

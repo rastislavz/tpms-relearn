@@ -52,7 +52,7 @@ def save_backup(snapshot, destination):
     path = Path(destination)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("x", encoding="utf-8") as file:
-        json.dump({"format": "chr-tpms-backup-v1", "created": datetime.now(timezone.utc).isoformat(), **snapshot}, file, indent=2)
+        json.dump({"format": "tpms-relearn-backup-v1", "created": datetime.now(timezone.utc).isoformat(), **snapshot}, file, indent=2)
         file.write("\n")
         file.flush()
         os.fsync(file.fileno())

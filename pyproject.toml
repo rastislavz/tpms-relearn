@@ -3,14 +3,14 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "chr-tpms"
+name = "tpms-relearn"
 version = "0.1.0"
 description = "Read and register Toyota TPMS sensor IDs through a Bluetooth ELM327 adapter"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = ["bleak>=1.0,<4"]
-keywords = ["toyota", "tpms", "obd", "elm327", "ble", "c-hr"]
+keywords = ["toyota", "lexus", "tpms", "relearn", "obd", "elm327", "ble"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.scripts]
-chr-tpms = "chr_tpms.cli:main"
+tpms-relearn = "tpms_relearn.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["chr_tpms*"]
+include = ["tpms_relearn*"]

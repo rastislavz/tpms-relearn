@@ -1,6 +1,6 @@
 ---
 name: Compatibility report
-about: Tell us whether chr-tpms worked on your car and adapter
+about: Tell us whether tpms-relearn worked on your car and adapter
 title: "[compat] CAR YEAR / ADAPTER"
 labels: compatibility
 ---

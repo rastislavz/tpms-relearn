@@ -20,4 +20,4 @@ paste here
 paste here
 ```
 
-**Setup:** car model and year, adapter, OS, `chr-tpms --version`
+**Setup:** car model and year, adapter, OS, `tpms-relearn --version`

@@ -1,6 +1,6 @@
 # Protocol notes
 
-What `chr-tpms` sends and what the car answers. Observed on a 2023 Toyota C-HR with a Veepeak OBDCheck BLE (ELM327 v1.5) unless marked otherwise.
+What `tpms-relearn` sends and what the car answers. Observed on a 2023 Toyota C-HR with a Veepeak OBDCheck BLE (ELM327 v1.5) unless marked otherwise.
 
 ## Transport
 
@@ -20,12 +20,12 @@ ATZ ATE0 ATL0 ATS1 ATH1 ATD0 ATSP6 ATAL ATCAF0 ATCFC0 ATSH750 ATCRA758 ATST32 AT
 ```
 
 - **`ATAL` is required.** By default an ELM327 answers `?` to raw frames with 8 data bytes.
-- `ATCAF0` / `ATCFC0`: the adapter does no ISO-TP formatting or flow control. `chr-tpms` builds every frame and sends flow control itself.
+- `ATCAF0` / `ATCFC0`: the adapter does no ISO-TP formatting or flow control. `tpms-relearn` builds every frame and sends flow control itself.
 - `ATCEA 2A` with 7-byte frames (letting the adapter add the address) returned `NO DATA` on the tested adapter, so it is not used.
 
 ### Flow control
 
-The ECU replies to a first frame with `30 01 00`: block size 1, no separation time. It wants a flow-control frame after **every** consecutive frame. When the ECU sends a multi-frame reply, `chr-tpms` answers with `2A 30 00 00 00 00 00 00`.
+The ECU replies to a first frame with `30 01 00`: block size 1, no separation time. It wants a flow-control frame after **every** consecutive frame. When the ECU sends a multi-frame reply, `tpms-relearn` answers with `2A 30 00 00 00 00 00 00`.
 
 ## `can` profile (tested)
 

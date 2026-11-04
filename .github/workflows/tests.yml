@@ -18,4 +18,4 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -e .
       - run: python -m unittest discover -s tests -v
-      - run: chr-tpms plan --protocol can 1111111 2222222 3333333 4444444
+      - run: tpms-relearn plan --protocol can 1111111 2222222 3333333 4444444
