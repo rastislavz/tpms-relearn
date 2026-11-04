@@ -1,0 +1,17 @@
+# Personal data: contain sensor IDs and adapter IDs
+sessions/
+backups/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

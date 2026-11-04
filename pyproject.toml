@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chr-tpms"
+version = "0.1.0"
+description = "Read and register Toyota TPMS sensor IDs through a Bluetooth ELM327 adapter"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["bleak>=1.0,<4"]
+keywords = ["toyota", "tpms", "obd", "elm327", "ble", "c-hr"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+[project.scripts]
+chr-tpms = "chr_tpms.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chr_tpms*"]
