@@ -15,24 +15,52 @@ New wheels or new sensors? The car will show the TPMS warning light until it lea
 
 - A **Toyota** with a direct TPMS (sensors inside the wheels). Tested so far: C-HR 2023. See [Compatibility](#compatibility).
 - A **Bluetooth Low Energy ELM327 adapter**. Tested: [Veepeak OBDCheck BLE](https://veepeak.com/products/obdcheck-ble)
-- A **Mac** with Python 3.11 or newer. Linux and Windows may work but are untested.
+- A **computer with Bluetooth**: a Mac or a Windows 10/11 PC (Linux should work too).
+- **Python 3.11 or newer**: [python.org/downloads](https://www.python.org/downloads/)
 - The **IDs of your new sensors**. They are printed on the sensor or its box, usually 7 or 8 hexadecimal characters such as `5D10A01`.
 
 ## Install
 
-```sh
-git clone https://github.com/roosht3/tpms-relearn.git
-cd tpms-relearn
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
+### Windows
+
+1. Install Python from [python.org/downloads](https://www.python.org/downloads/). In the installer, tick **"Add python.exe to PATH"**.
+2. Open **Command Prompt** (press Start, type `cmd`, press Enter) and run:
+
+```bat
+py -m venv tpms-relearn
+tpms-relearn\Scripts\activate
+pip install https://github.com/roosht3/tpms-relearn/archive/refs/heads/main.zip
 tpms-relearn --help
 ```
 
-On macOS, allow Bluetooth for your terminal app when asked (System Settings → Privacy & Security → Bluetooth).
+Make sure Bluetooth is switched on (Settings → Bluetooth & devices). You do **not** need to pair the adapter in Windows. The tool connects to it directly.
+
+Next time, open Command Prompt and run `tpms-relearn\Scripts\activate` first.
 
 > [!TIP]
-> Do not put the project in an iCloud Drive folder. iCloud breaks Python virtual environments, and you get timeouts or `ModuleNotFoundError: No module named 'tpms_relearn'`.
+> Use Command Prompt, not PowerShell. PowerShell blocks the `activate` script by default.
+
+### macOS
+
+Open **Terminal** and run:
+
+```sh
+python3 -m venv ~/tpms-relearn
+source ~/tpms-relearn/bin/activate
+pip install https://github.com/roosht3/tpms-relearn/archive/refs/heads/main.zip
+tpms-relearn --help
+```
+
+Allow Bluetooth for Terminal when macOS asks (System Settings → Privacy & Security → Bluetooth).
+
+Next time, open Terminal and run `source ~/tpms-relearn/bin/activate` first.
+
+> [!TIP]
+> Don't create the environment inside an iCloud Drive folder. iCloud breaks Python environments, and you get timeouts or `ModuleNotFoundError: No module named 'tpms_relearn'`.
+
+### Linux
+
+Same as macOS. Your user may need permission to use Bluetooth (BlueZ).
 
 ## Usage
 
@@ -54,7 +82,10 @@ Look for the entry named `VEEPEAK` (or similar) and copy its `device` value:
 }
 ```
 
-On macOS this is a UUID, not a MAC address. Below it is written as `DEVICE`.
+On a Mac this is a long ID like the one above. On Windows and Linux it is the adapter's Bluetooth address, like `AA:BB:CC:DD:EE:FF`. Below it is written as `DEVICE`.
+
+> [!NOTE]
+> On Windows, the `\` at the end of the long commands below doesn't work. Put each command on a single line instead.
 
 ### 2. Read the current IDs
 
@@ -131,9 +162,11 @@ To undo a change, run `write` again with your old IDs from the backup file.
 
 ## Compatibility
 
-| Car | Adapter | Protocol | Read | Write |
-|---|---|---|---|---|
-| Toyota C-HR 2023 (1st gen, EU) | Veepeak OBDCheck BLE (ELM327 v1.5) | `can` | ✅ | ✅ |
+| Car | Adapter | Computer | Protocol | Read | Write |
+|---|---|---|---|---|---|
+| Toyota C-HR 2023 (1st gen, EU) | Veepeak OBDCheck BLE (ELM327 v1.5) | macOS | `can` | ✅ | ✅ |
+
+Windows and Linux pass the automated tests but haven't been used with a real car yet. If you run it on a Windows PC, please report how it went.
 
 Toyota uses the same TPMS address (`750`/`2A`) across many models, so other Toyotas, and likely Lexus, should work with one of the two supported protocols:
 

@@ -21,7 +21,7 @@ def parser():
     plan.add_argument("ids", nargs="+")
     for name in ("inspect", "probe", "read", "write"):
         cmd = sub.add_parser(name)
-        cmd.add_argument("--device", required=True, help="Device UUID from scan (macOS uses UUIDs, not Bluetooth MAC addresses)")
+        cmd.add_argument("--device", required=True, help="Device from scan: a UUID on macOS, a Bluetooth address (AA:BB:CC:DD:EE:FF) on Windows and Linux")
         cmd.add_argument("--write-char")
         cmd.add_argument("--notify-char")
         cmd.add_argument("--log", type=Path, help="New transcript file; existing files are never overwritten")
@@ -53,7 +53,7 @@ async def run(args):
     try:
         from bleak import BleakClient, BleakScanner
     except ImportError as exc:
-        raise ProtocolError("Install BLE dependency first: python -m pip install -e .") from exc
+        raise ProtocolError("Install the BLE dependency first: python -m pip install bleak") from exc
     if args.action == "scan":
         devices = await BleakScanner.discover(timeout=8, return_adv=True)
         emit([{"device": d.address, "name": adv.local_name or d.name, "rssi": adv.rssi, "services": adv.service_uuids} for d, adv in devices.values()])

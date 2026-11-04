@@ -24,7 +24,7 @@ Open a [compatibility report](../../issues/new?template=compatibility_report.md)
 git clone https://github.com/roosht3/tpms-relearn.git
 cd tpms-relearn
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e .
 python -m unittest discover -s tests -v
 ```

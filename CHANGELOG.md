@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Windows support: install instructions, Bluetooth address help, and Windows in the test workflow
+- Simpler install for everyone: `pip install` from GitHub, no git needed
+
 ## 0.1.0 (2026-11-04)
 
 First release.
