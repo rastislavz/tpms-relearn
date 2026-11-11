@@ -14,7 +14,7 @@ New wheels or new sensors? The car will show the TPMS warning light until it lea
 ## What you need
 
 - A **Toyota** with a direct TPMS (sensors inside the wheels). Tested so far: C-HR 2023. See [Compatibility](#compatibility).
-- A **Bluetooth Low Energy ELM327 adapter**. Tested: [Veepeak OBDCheck BLE](https://veepeak.com/products/obdcheck-ble)
+- A **Bluetooth Low Energy ELM327 adapter**, or a paired **Bluetooth Classic SPP adapter** (see [serial setup](#bluetooth-classic-adapters-spp--serial) below). Tested: [Veepeak OBDCheck BLE](https://veepeak.com/products/obdcheck-ble)
 - A **computer with Bluetooth**: a Mac or a Windows 10/11 PC (Linux should work too).
 - **Python 3.11 or newer**: [python.org/downloads](https://www.python.org/downloads/)
 - The **IDs of your new sensors**. They are printed on the sensor or its box, usually 7 or 8 hexadecimal characters such as `5D10A01`.
@@ -204,3 +204,51 @@ Compatibility reports, bug fixes and support for more cars are welcome. See [CON
 ## License
 
 [MIT](LICENSE). Not affiliated with or endorsed by Toyota. All trademarks belong to their owners.
+
+## Bluetooth Classic adapters (SPP / serial)
+
+Adapters such as older Vgate ELM327 Bluetooth models use Bluetooth Classic's
+Serial Port Profile (SPP). BLE scanning cannot discover them. Pair the adapter
+in your operating system first, entering the PIN supplied with the adapter.
+Then use the serial port exposed by the operating system:
+
+```sh
+python -m pip install -e .
+tpms-relearn scan --transport serial
+```
+
+This lists **all local serial ports**, including unrelated USB and built-in ports;
+it does not scan the air or confirm which port is an ELM327. Use your adapter's
+port from the list, or provide it explicitly if enumeration omits it:
+
+- macOS: `/dev/cu.OBDII-SPP` or a similarly named `/dev/cu.*` port.
+- Windows: the adapter's **outgoing** Bluetooth COM port, for example `COM5`
+  (check Bluetooth settings / Device Manager).
+- Linux: an RFCOMM device such as `/dev/rfcomm0`. Pairing alone may not create
+  this device; configure an RFCOMM binding to the adapter's SPP service using
+  your distribution's Bluetooth tools. Your user must have serial-port access.
+
+Close other OBD applications and disconnect your phone from the adapter first.
+On macOS, for example (replace the example port with your actual port):
+
+```sh
+tpms-relearn inspect --transport serial --device /dev/cu.OBDII-SPP
+tpms-relearn probe --transport serial --device /dev/cu.OBDII-SPP
+tpms-relearn read --transport serial --device /dev/cu.OBDII-SPP --protocol can
+```
+
+Serial `inspect` opens the port and sends only `ATI` to read the adapter identity;
+it does not query the vehicle. `probe` and `read` use the same vehicle protocols
+and backup behavior as BLE. For `write`, add `--transport serial` and the serial
+port to the existing write examples; `--expect`, offline preview, `--execute`,
+and verification work the same way. No command is retried after a serial failure.
+
+The default serial baud rate is 38400; override it with `--baudrate 9600` (or your
+adapter's documented rate) if necessary. BLE remains the default transport.
+`--write-char` and `--notify-char` are BLE-only options. This serial transport
+also accepts local USB serial adapters, but their ELM command support still
+needs to match the project's requirements.
+
+Bluetooth Classic support has automated transport tests, but has not yet been
+verified with a physical adapter or vehicle. The existing tested vehicle/adapter
+compatibility table above still applies.

@@ -91,6 +91,61 @@ class Elm:
         return identity
 
 
+class SerialElm(Elm):
+    """ELM command stream over an OS-provided Bluetooth SPP serial port."""
+
+    def __init__(self, port, transcript):
+        self.port = port
+        self.transcript = transcript
+        self.lock = asyncio.Lock()
+        self.broken = False
+
+    def _exchange(self, command, timeout):
+        response = bytearray()
+        deadline = time.monotonic() + timeout
+        try:
+            waiting = self.port.in_waiting
+            if waiting:
+                self.transcript.record(discarded=self.port.read(waiting).hex())
+            self.transcript.record(tx=command)
+            data = (command + "\r").encode("ascii")
+            self.port.write_timeout = max(0.001, deadline - time.monotonic())
+            if self.port.write(data) != len(data):
+                raise ProtocolError("Incomplete serial write; operation outcome is unknown")
+            while b">" not in response:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise TimeoutError("Serial adapter response timed out")
+                self.port.timeout = min(0.1, remaining)
+                response.extend(self.port.read(min(4096, max(1, self.port.in_waiting))))
+                if len(response) > 65536:
+                    raise ProtocolError("ELM response exceeds limit")
+            text = response.decode("ascii", errors="strict").split(">", 1)[0]
+            self.transcript.record(rx=text)
+            lines = [s.strip() for s in text.replace("\r", "\n").splitlines() if s.strip()]
+            return "\n".join(s for s in lines if s.replace(" ", "").upper() != command.replace(" ", "").upper())
+        except BaseException:
+            self.broken = True
+            self.transcript.record(incomplete_rx=response.decode("ascii", errors="replace"))
+            raise
+
+    async def command(self, command, timeout=8):
+        async with self.lock:
+            if self.broken:
+                raise ProtocolError("Transport is desynchronized; reconnect before another command")
+            task = asyncio.create_task(asyncio.to_thread(self._exchange, command, timeout))
+            try:
+                return await asyncio.shield(task)
+            except asyncio.CancelledError:
+                # Drain the bounded worker before the caller closes the port.
+                self.broken = True
+                try:
+                    await task
+                except Exception:
+                    pass
+                raise
+
+
 class ToyotaLink:
     """Raw extended-address ISO-TP with explicit flow control in both directions."""
     def __init__(self, elm):
